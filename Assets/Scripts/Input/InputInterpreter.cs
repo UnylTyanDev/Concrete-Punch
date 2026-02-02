@@ -12,7 +12,7 @@ public class InputInterpreter : MonoBehaviour
     public InputActionReference grabAction;
 
     // Тут в нас посилання на Finite State Machine сутності
-    public EntityStateManager entityManager;
+    public PlayerStateManager playerManager;
 
     void OnEnable()
     {
@@ -59,7 +59,7 @@ public class InputInterpreter : MonoBehaviour
 
     void SendIntent(Intent intent)
     {
-        if (entityManager != null)
-            entityManager.ReceiveIntent(intent);
+        if (playerManager != null)
+            playerManager.ReceiveIntent(intent);
     }
 }
