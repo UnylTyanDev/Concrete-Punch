@@ -7,10 +7,9 @@ public class EntityMoveState : EntityBaseState
 
     public override void EnterState(EntityStateManager entity)
     {
-        // Функціонал початку стану
-        Animator animator = entity.GetComponent<Animator>(); // Приклад
-        if (animator != null)
-            animator.Play("entity_move");
+        // Функціонал початку стану 
+        if (entity.animator != null)
+            entity.animator.Play("entity_move");// Приклад
     }
 
     public override void UpdateState(EntityStateManager entity)
@@ -20,7 +19,7 @@ public class EntityMoveState : EntityBaseState
         {
             // Здесь вызываем исполнитель — Movement, который просто двигает
             Debug.Log("Рухаємося:" + moveVector);
-            //entity.Movement.Move(moveVector);
+            entity.Movement.SetMoveInput(moveVector);
         }
         else
         {
@@ -32,7 +31,7 @@ public class EntityMoveState : EntityBaseState
     public override void HandleIntent(EntityStateManager entity, Intent intent)
     {
         // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        Debug.Log("Обробляємо намір сутності в стані MOVE");
+        //Debug.Log("Обробляємо намір сутності в стані MOVE");
 
         if (intent.Type == IntentType.Move)
         {
@@ -40,17 +39,18 @@ public class EntityMoveState : EntityBaseState
             return;
         }
 
-        // Приклад: Під час руху з'явився намір когось вдарити або схопити - FSM дозволяє переходи
+        // Якщо потрібно перейти в інші стани — переключаємося на їхні інстанси,
+        // а не на MoveState (і не викликаємо ExitState вручну).
         if (intent.Type == IntentType.Grab)
         {
-            entity.SwitchState(entity.MoveState);
-            // Передаємо цей самий намір в наступний стан щоб він також обработався
-            entity.ReceiveIntent(intent);
+            entity.SwitchState(entity.GrabState);
+                                                  // якщо потрібно, можно передати інтент: entity.GrabState.HandleIntent(entity, intent);
+            return;
         }
         else if (intent.Type == IntentType.Attack)
         {
-            entity.SwitchState(entity.MoveState);
-            entity.ReceiveIntent(intent);
+            entity.SwitchState(entity.ActionState);
+            return;
         }
     }
 

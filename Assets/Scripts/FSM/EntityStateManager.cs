@@ -1,8 +1,11 @@
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class EntityStateManager : MonoBehaviour
 {
+    public PlayerMovement Movement;
+    public Animator animator;
     EntityBaseState currentState;
 
     public EntityFreeState FreeState = new EntityFreeState();
@@ -25,10 +28,14 @@ public class EntityStateManager : MonoBehaviour
     }
 
     // Ця функція викликається всередині інших методів для того щоб була можливість переходити в інші стани
-    public void SwitchState(EntityBaseState state)
+    public void SwitchState(EntityBaseState newState)
     {
-        currentState = state;
-        state.EnterState(this);
+        if (newState == null) return;
+        if (currentState == newState) return; // захист від зайвих переходів
+
+        currentState?.ExitState(this);
+        currentState = newState;
+        currentState.EnterState(this);
     }
 
     public void ReceiveIntent(Intent intent)

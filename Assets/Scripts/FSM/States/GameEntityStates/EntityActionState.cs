@@ -6,6 +6,7 @@ public class EntityActionState : EntityBaseState
     public override void EnterState(EntityStateManager entity)
     {
         // Функціонал початку стану
+        entity.animator.Play("entity_attack");
     }
 
     public override void UpdateState(EntityStateManager entity)
@@ -16,7 +17,7 @@ public class EntityActionState : EntityBaseState
     public override void HandleIntent(EntityStateManager entity, Intent intent)
     {
         // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        Debug.Log("Обробляємо намір сутності в стані ACTION");
+        //Debug.Log("Обробляємо намір сутності в стані ACTION");
     }
 
     public override void ExitState(EntityStateManager entity) { }

@@ -18,7 +18,7 @@ public class EntityGrabState : EntityBaseState
     public override void HandleIntent(EntityStateManager entity, Intent intent)
     {
         // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        Debug.Log("Обробляємо намір сутності в стані GRAB");
+        //Debug.Log("Обробляємо намір сутності в стані GRAB");
     }
 
     public override void ExitState(EntityStateManager entity) { }
