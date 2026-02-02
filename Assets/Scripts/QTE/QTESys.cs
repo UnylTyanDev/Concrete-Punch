@@ -26,26 +26,6 @@ public class QTESys : MonoBehaviour
     bool running;
     Text uiText;
 
-    private float timer = 0f;
-    public float interval = 50.0f;
-    void Update()
-    {
-        bool qteOk;
-
-        timer += Time.deltaTime;
-
-        if (timer >= interval)
-        {
-            timer = 0f;
-            Run(
-                timeLimit: 1.2f,
-                key: Key.E,
-                requiredPresses: 5,
-                onDone: result => { qteOk = result; }
-            );
-        }
-    }
-
     public void Run(float timeLimit, Key key, int requiredPresses, Action<bool> onDone)
     {
         if (running) return;
