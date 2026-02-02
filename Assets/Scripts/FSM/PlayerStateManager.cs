@@ -1,18 +1,16 @@
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
-public class EntityStateManager : MonoBehaviour
+public class PlayerStateManager : MonoBehaviour
 {
     public PlayerMovement Movement;
-    public Animator animator;
-    EntityBaseState currentState;
+    public EntityAnimatorManager entityAnimator;
+    PlayerBaseState currentState;
 
-    public EntityFreeState FreeState = new EntityFreeState();
-    public EntityMoveState MoveState = new EntityMoveState();
-    public EntityGrabState GrabState = new EntityGrabState();
-    public EntityStunnedState StunnedState = new EntityStunnedState();
-    public EntityActionState ActionState = new EntityActionState();
+    public PlayerFreeState FreeState = new PlayerFreeState();
+    public PlayerMoveState MoveState = new PlayerMoveState();
+    public PlayerGrabState GrabState = new PlayerGrabState();
+    public PlayerStunnedState StunnedState = new PlayerStunnedState();
+    public PlayerActionState ActionState = new PlayerActionState();
 
     // Задаємо початковий стан для сутності. (Нехай буде вільний стан)
     void Start()
@@ -28,7 +26,7 @@ public class EntityStateManager : MonoBehaviour
     }
 
     // Ця функція викликається всередині інших методів для того щоб була можливість переходити в інші стани
-    public void SwitchState(EntityBaseState newState)
+    public void SwitchState(PlayerBaseState newState)
     {
         if (newState == null) return;
         if (currentState == newState) return; // захист від зайвих переходів

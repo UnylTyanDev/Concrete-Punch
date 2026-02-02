@@ -1,24 +1,23 @@
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public class EntityMoveState : EntityBaseState
+public class PlayerMoveState : PlayerBaseState
 {
     Vector2 moveVector = Vector2.zero;
 
-    public override void EnterState(EntityStateManager entity)
+    public override void EnterState(PlayerStateManager entity)
     {
         // Функціонал початку стану 
-        if (entity.animator != null)
-            entity.animator.Play("entity_move");// Приклад
+        if (entity.entityAnimator != null)
+            entity.entityAnimator.PlayAnimation("entity_move");// Приклад
     }
 
-    public override void UpdateState(EntityStateManager entity)
+    public override void UpdateState(PlayerStateManager entity)
     {
         // Функціонал який виконується кожен кадр для цього стану
         if (moveVector.sqrMagnitude > 0.0001f)
         {
             // Здесь вызываем исполнитель — Movement, который просто двигает
-            Debug.Log("Рухаємося:" + moveVector);
+            //Debug.Log("Рухаємося:" + moveVector);
             entity.Movement.SetMoveInput(moveVector);
         }
         else
@@ -28,7 +27,7 @@ public class EntityMoveState : EntityBaseState
         }
     }
 
-    public override void HandleIntent(EntityStateManager entity, Intent intent)
+    public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
         // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
         //Debug.Log("Обробляємо намір сутності в стані MOVE");
@@ -54,7 +53,7 @@ public class EntityMoveState : EntityBaseState
         }
     }
 
-    public override void ExitState(EntityStateManager entity)
+    public override void ExitState(PlayerStateManager entity)
     {
         moveVector = Vector2.zero;
     }

@@ -14,6 +14,12 @@ public class PlayerMovement : MonoBehaviour
             cameraTransform = Camera.main.transform;
     }
 
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     void Update()
     {
         ApplyMovement();

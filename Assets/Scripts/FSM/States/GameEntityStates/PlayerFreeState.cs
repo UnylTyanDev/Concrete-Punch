@@ -1,24 +1,24 @@
 ﻿using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public class EntityFreeState : EntityBaseState
+public class PlayerFreeState : PlayerBaseState
 {
-    public override void EnterState(EntityStateManager entity)
+    public override void EnterState(PlayerStateManager entity)
     {
         // Функціонал початку стану
         // Тут сутність входить в вільний режим де він нічим не обмежений,
         // з цього стану він може перейти в: GrabState, MoveState, StunnedState
  
-        if (entity.animator != null) // Приклад
-            entity.animator.Play("entity_idle");
+        if (entity.entityAnimator != null) // Приклад
+            entity.entityAnimator.PlayAnimation("entity_idle");
     }
 
-    public override void UpdateState(EntityStateManager entity)
+    public override void UpdateState(PlayerStateManager entity)
     {
         // Функціонал який виконується кожен кадр для цього стану
     }
 
-    public override void HandleIntent(EntityStateManager entity, Intent intent)
+    public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
         // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
         //Debug.Log("Обробляємо намір сутності в стані FREE");
@@ -32,5 +32,5 @@ public class EntityFreeState : EntityBaseState
         }
     }
 
-    public override void ExitState(EntityStateManager entity) { }
+    public override void ExitState(PlayerStateManager entity) { }
 }
