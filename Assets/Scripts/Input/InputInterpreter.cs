@@ -14,6 +14,12 @@ public class InputInterpreter : MonoBehaviour
     // Тут в нас посилання на Finite State Machine сутності
     public PlayerStateManager playerManager;
 
+    // Current input capture
+    private Vector2 _currentMove = Vector2.zero;
+    private bool _attackHeld = false;
+    private bool _grabHeld = false;
+    private float _deadzone = 0.1f;
+
     void OnEnable()
     {
         if (moveAction != null)
@@ -23,10 +29,13 @@ public class InputInterpreter : MonoBehaviour
         }
 
         if (attackAction != null)
-            attackAction.action.started += ctx => SendIntent(Intent.Attack());
+        {
+            attackAction.action.started += ctx => { _attackHeld = true; SendIntent(Intent.Attack(true)); };
+            attackAction.action.canceled += ctx => { _attackHeld = false; SendIntent(Intent.Attack(false)); };
+        }
 
         if (grabAction != null)
-            grabAction.action.started += ctx => SendIntent(Intent.Grab());
+            grabAction.action.started += ctx => { _grabHeld = true; SendIntent(Intent.Grab()); };
     }
 
     void OnDisable()
@@ -38,28 +47,63 @@ public class InputInterpreter : MonoBehaviour
         }
 
         if (attackAction != null)
-            attackAction.action.started -= ctx => SendIntent(Intent.Attack());
+        {
+            attackAction.action.started -= ctx => { _attackHeld = true; SendIntent(Intent.Attack(true)); };
+            attackAction.action.canceled -= ctx => { _attackHeld = false; SendIntent(Intent.Attack(false)); };
+        }
 
         if (grabAction != null)
-            grabAction.action.started -= ctx => SendIntent(Intent.Grab());
+            grabAction.action.started -= ctx => { _grabHeld = true; SendIntent(Intent.Grab()); };
     }
 
     void OnMovePerformed(InputAction.CallbackContext ctx)
     {
-        Vector2 v = ctx.ReadValue<Vector2>();
-        // Надсилаємо намір в FSM сутності, вона сама вирішить чи виконається дія в певному стані
-        SendIntent(Intent.Move(v));
+        _currentMove = ctx.ReadValue<Vector2>();
+        SendIntent(Intent.Move(_currentMove));
     }
 
     void OnMoveCanceled(InputAction.CallbackContext ctx)
     {
-        // Нульовий вектор це в нас повна зупинка
+        _currentMove = Vector2.zero;
         SendIntent(Intent.Move(Vector2.zero));
     }
 
     void SendIntent(Intent intent)
     {
+        Debug.Log("Sending intent: " + intent);
         if (playerManager != null)
             playerManager.ReceiveIntent(intent);
+    }
+
+    // ---- НОВОЕ: внешний запрос текущего ввода ----
+    // Вызывается FSM (через PlayerStateManager), когда нужно "услышать" удерживаемый ввод
+    public void RequestEvaluateInput()
+    {
+        Debug.Log("REQUESTING CURRENT INPUT");
+        // Сначала буферные/приоритетные интенты (если есть) — можно расширять
+
+        if (_currentMove.sqrMagnitude > _deadzone * _deadzone)
+        {
+            Debug.Log("Sending because of request: MOVEMENT " + _currentMove);
+            SendIntent(Intent.Move(_currentMove));
+            return;
+        }
+
+        if (_attackHeld)
+        {
+            Debug.Log("Sending because of request: Attack");
+            SendIntent(Intent.Attack(true));
+            return;
+        }
+
+        if (_grabHeld)
+        {
+            Debug.Log("Sending because of request: Grab");
+            SendIntent(Intent.Grab());
+            return;
+        }
+
+        // Если ничего нет — можно послать "Idle" или ничего не делать
+        // SendIntent(Intent.Idle()); // опционально
     }
 }

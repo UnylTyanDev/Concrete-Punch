@@ -1,14 +1,15 @@
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public class PlayerStunnedState : PlayerBaseState
+public class PlayerGrabbedState : PlayerBaseState
 {
-    public override void EnterState(PlayerStateManager entity)
+    public PlayerGrabbedState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }
+
+    public override void EnterState()
     {
         // Функціонал початку стану
     }
 
-    public override void UpdateState(PlayerStateManager entity)
+    public override void UpdateState()
     {
         // Функціонал який виконується кожен кадр для цього стану
     }
@@ -19,5 +20,10 @@ public class PlayerStunnedState : PlayerBaseState
         //Debug.Log("Обробляємо намір сутності в стані STUNNED");
     }
 
-    public override void ExitState(PlayerStateManager entity) { }
+    public override void ExitState() { }
+
+    public override void InitializeSubState()
+    {
+
+    }
 }

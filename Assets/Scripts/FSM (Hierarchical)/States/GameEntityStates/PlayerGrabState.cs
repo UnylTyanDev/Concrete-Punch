@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class PlayerGrabState : PlayerBaseState
 {
-    public override void EnterState(PlayerStateManager entity)
+    public PlayerGrabState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }
+
+    public override void EnterState()
     {
         // Функціонал початку стану
         // Тут сутність входить в режим захвату, коли її або вона хватає когось.
@@ -11,7 +13,7 @@ public class PlayerGrabState : PlayerBaseState
 
     }
 
-    public override void UpdateState(PlayerStateManager entity)
+    public override void UpdateState()
     {
         // Функціонал який виконується кожен кадр для цього стану
     }
@@ -22,5 +24,10 @@ public class PlayerGrabState : PlayerBaseState
         //Debug.Log("Обробляємо намір сутності в стані GRAB");
     }
 
-    public override void ExitState(PlayerStateManager entity) { }
+    public override void ExitState() { }
+
+    public override void InitializeSubState()
+    {
+
+    }
 }
