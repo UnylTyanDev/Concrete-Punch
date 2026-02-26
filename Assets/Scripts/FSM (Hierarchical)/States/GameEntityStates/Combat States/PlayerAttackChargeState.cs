@@ -2,6 +2,10 @@ using System;
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
+/// <summary>
+/// A state where player is currently holding the attack button to prepare for a powerful punch.
+/// From this state it can transition to: AttackCharge
+/// </summary>
 public class PlayerAttackChargeState : PlayerBaseState
 {
     private float _holdTime;
@@ -13,8 +17,8 @@ public class PlayerAttackChargeState : PlayerBaseState
 
     public override void EnterState()
     {
-        // Функціонал початку стану
-        
+        // State initialization functionality (Attack CHARGE)
+
         //Debug.Log($"[ChargeState] currentAttack == {Ctx.currentAttack} | entityAnimator == {Ctx.entityAnimator}");
         _attackData = Ctx.currentAttack;
         //Debug.Log($"Animation name: {_attackData.animationName}");
@@ -40,8 +44,8 @@ public class PlayerAttackChargeState : PlayerBaseState
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
-        // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        //Debug.Log("Обробляємо намір сутності в стані ACTION");
+        // Here the entity's intent is determined, and whether the action will be executed depending on the state
+        // Debug.Log("Processing entity intent in Attack charge state");
         if (intent.Type == IntentType.Attack && !intent.IsPressed)
         {
             SwitchToRelease();

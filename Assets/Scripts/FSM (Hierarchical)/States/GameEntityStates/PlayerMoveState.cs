@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// A state where it is changing its transform by moving in space.
+/// From this state it can transition to: GrabState, FreeState, AttackCharge, RunState
+/// </summary>
 public class PlayerMoveState : PlayerBaseState
 {
     public PlayerMoveState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) 
@@ -8,34 +12,33 @@ public class PlayerMoveState : PlayerBaseState
     }
     public override void EnterState()
     {
+        // Function that is executed when entering the state
         Debug.Log("Ми ввійшли в стан Move!");
-
-        // Функціонал початку стану 
         if (Ctx.entityAnimator != null)
             Ctx.entityAnimator.PlayAnimation("entity_move");// Приклад
     }
 
     public override void UpdateState()
     {
-        // Функціонал який виконується кожен кадр для цього стану
+        // Functionality executed every frame for this state
         //Debug.Log("Оновлюємо переміщення " + Ctx.moveVector.sqrMagnitude);
-        
+
         if (Ctx.moveVector.sqrMagnitude > 0.0001f)
         {
-            // Здесь вызываем исполнитель — Movement, который просто двигает
+            // Here we call the executor — Movement, which simply moves
             //Debug.Log("Рухаємося:" + Ctx.moveVector);
             Ctx.Movement.SetMoveInput(Ctx.moveVector);
         }
         else
         {
-            // Нет ввода — возвращаемся в свободный
+            // No input - returning to idle
             SwitchState(Factory.Idle());
         }
     }
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
-        // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
+        // Here the entity's intent is determined, and whether the action will be executed depending on the state
         //Debug.Log("Обробляємо намір сутності в стані MOVE");
 
         if (intent.Type == IntentType.Move)
@@ -45,12 +48,12 @@ public class PlayerMoveState : PlayerBaseState
             return;
         }
 
-        // Якщо потрібно перейти в інші стани — переключаємося на їхні інстанси,
-        // а не на MoveState (і не викликаємо ExitState вручну).
+        // If needed to switch to other states — switch to their instances,
+        // not to MoveState (and do not call ExitState manually)
         if (intent.Type == IntentType.Grab)
         {
             SwitchState(Factory.Walk());
-            // якщо потрібно, можно передати інтент: entity.GrabState.HandleIntent(entity, intent);
+            // If needed, you can pass the intent: entity.GrabState.HandleIntent(entity, intent);
             return;
         }
         else if (intent.Type == IntentType.Attack && intent.IsPressed)

@@ -11,6 +11,9 @@ public enum HitDirection
     Back
 }
 
+/// <summary>
+/// A structure of collected data, created for transporting the data of a damage more compact
+/// </summary>
 public struct DamageData
 {
     public float Amount;

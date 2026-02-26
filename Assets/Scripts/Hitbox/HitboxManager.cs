@@ -2,6 +2,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Activates a hitbox and can pass the damage data to other object that have IDamageable interface
+/// </summary>
 public class HitboxManager : MonoBehaviour
 {
     [Header("Settings")]

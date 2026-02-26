@@ -1,3 +1,6 @@
+/// <summary>
+/// A hierarchical part of FSM. Its usefull because it passes the current context of a state to next state we about to switch
+/// </summary>
 public class PlayerStateFactory
 {
     PlayerStateManager _context;
@@ -44,7 +47,6 @@ public class PlayerStateFactory
     }
     public PlayerBaseState Grabbed() 
     {
-        // TODO: Add Grabbed State to the State Machine
         return new PlayerGrabbedState(_context, this);
     }
 }

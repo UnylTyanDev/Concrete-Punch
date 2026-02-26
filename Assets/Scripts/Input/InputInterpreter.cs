@@ -3,15 +3,18 @@ using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// A class, that reads the Unity Input System signals and transforms them into intents, which can be handled inside of the states (FSM) differently.
+/// </summary>
 [RequireComponent(typeof(PlayerInput))]
 public class InputInterpreter : MonoBehaviour
 {
-    // “ут ми через ≥нспектор прив'€зуЇмо д≥њ з Unity Input System
+    // Here we link the action to the Unity Input System through the inspector
     public InputActionReference moveAction;
     public InputActionReference attackAction;
     public InputActionReference grabAction;
 
-    // “ут в нас посиланн€ на Finite State Machine сутност≥
+    // Here we have a link on the Finite State Machine of the entity
     public PlayerStateManager playerManager;
 
     // Current input capture
@@ -75,12 +78,12 @@ public class InputInterpreter : MonoBehaviour
             playerManager.ReceiveIntent(intent);
     }
 
-    // ---- Ќќ¬ќ≈: внешний запрос текущего ввода ----
-    // ¬ызываетс€ FSM (через PlayerStateManager), когда нужно "услышать" удерживаемый ввод
+    // ---- NEW: external request for current input ----
+    // Called by the FSM (via PlayerStateManager) when it needs to "read" the held input
     public void RequestEvaluateInput()
     {
         Debug.Log("REQUESTING CURRENT INPUT");
-        // —начала буферные/приоритетные интенты (если есть) Ч можно расшир€ть
+        // First, buffered/priority intents (if any) Ч can be extended
 
         if (_currentMove.sqrMagnitude > _deadzone * _deadzone)
         {
@@ -103,7 +106,7 @@ public class InputInterpreter : MonoBehaviour
             return;
         }
 
-        // ≈сли ничего нет Ч можно послать "Idle" или ничего не делать
-        // SendIntent(Intent.Idle()); // опционально
+        // If thereТs nothing Ч you can send "Idle" or do nothing
+        // SendIntent(Intent.Idle()); // optional
     }
 }

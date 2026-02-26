@@ -1,4 +1,8 @@
 using UnityEngine;
+/// <summary>
+/// A state where player is throwing a punch. (Active state of punch attack)
+/// From this state it can transition to: RecoveryAttack (Called from unity animation system), FreeState, MoveState, AttackCharge, RunState
+/// </summary>
 public class PlayerAttackReleaseState : PlayerBaseState
 {
     private AttackData _attackData;
@@ -11,7 +15,7 @@ public class PlayerAttackReleaseState : PlayerBaseState
 
     public override void EnterState()
     {
-        // Функціонал початку стану
+        // State initialization functionality (Attack release)
         Debug.Log("Ми в Release state!");
         Ctx.Movement.SetMoveInput(Vector2.zero); // We can add a little force when player throws a punch (Attack release)
         _attackData = Ctx.currentAttack;
@@ -30,7 +34,7 @@ public class PlayerAttackReleaseState : PlayerBaseState
 
     public override void UpdateState()
     {
-        // Функціонал який виконується кожен кадр для цього стану
+        // Functionality executed every frame for this state
     }
 
     private void ActivateHitbox()
@@ -40,8 +44,8 @@ public class PlayerAttackReleaseState : PlayerBaseState
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
-        // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        //Debug.Log("Обробляємо намір сутності в стані ACTION");
+        // Here the entity's intent is determined, and whether the action will be executed depending on the state
+        // Debug.Log("Processing entity intent in ACTION state");
     }
 
     public override void ExitState()

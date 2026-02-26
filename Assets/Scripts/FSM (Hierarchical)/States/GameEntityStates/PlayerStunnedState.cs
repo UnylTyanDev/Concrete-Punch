@@ -1,6 +1,8 @@
-using Unity.Android.Gradle.Manifest;
-using UnityEngine;
 
+/// <summary>
+/// A state where player is stunned by enemy attack, and playing hurt animation
+/// From this state it can transition to: FreeState
+/// </summary>
 public class PlayerStunnedState : PlayerBaseState
 {
     public PlayerStunnedState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }

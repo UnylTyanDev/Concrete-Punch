@@ -1,5 +1,7 @@
 using UnityEngine;
-
+/// <summary>
+/// A scriptable object that helps to create a whole new combo attacks with unique data
+/// </summary>
 [CreateAssetMenu(fileName = "AttackData", menuName = "Combat/AttackData")]
 public class AttackData : ScriptableObject
 {

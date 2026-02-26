@@ -1,6 +1,10 @@
 ﻿using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
+/// <summary>
+/// A state of free mode where entity is unrestricted, and can enter majority of states
+/// from this state it can transition to: GrabState, MoveState, AttackCharge, RunState
+/// </summary>
 public class PlayerFreeState : PlayerBaseState
 {
     private bool _firstUpdate;
@@ -12,11 +16,10 @@ public class PlayerFreeState : PlayerBaseState
 
     public override void EnterState()
     {
+        // State start functionality
+
         Debug.Log("Ми ввійшли в стан Free!");
         _firstUpdate = true;
-        // Функціонал початку стану
-        // Тут сутність входить в вільний режим де він нічим не обмежений,
-        // з цього стану він може перейти в: GrabState, MoveState, StunnedState
 
         if (Ctx.entityAnimator != null) // Приклад
             Ctx.entityAnimator.PlayAnimation("entity_idle");
@@ -24,6 +27,7 @@ public class PlayerFreeState : PlayerBaseState
 
     public override void UpdateState()
     {
+        // Functionality executed every frame for this state
         if (_firstUpdate)
         {
             _firstUpdate = false;
@@ -33,12 +37,11 @@ public class PlayerFreeState : PlayerBaseState
             // and therefore cant receive "HandleIntent()"
             Ctx.inputInterpreter.RequestEvaluateInput();
         }
-        // Функціонал який виконується кожен кадр для цього стану
     }
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
-        // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
+        // Here the entity's intent is determined, and whether the action will be executed depending on the state
         Debug.Log("Обробляємо намір сутності в стані FREE намір: " + intent.Type + " " + intent.MoveVector); 
 
         if (intent.Type == IntentType.Move)

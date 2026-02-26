@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// A class that a responsible for a giving the ability to the object to have health, and to damage and destroying it. 
+/// (Well, i need to split the responsibilities. This class shouldnt have be responsible for destroing object)
+/// </summary>
 public class EntityHealth : MonoBehaviour, IDamageble
 {
     [SerializeField] private float _maxHealth = 30;

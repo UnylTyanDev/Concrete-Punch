@@ -1,3 +1,6 @@
+/// <summary>
+/// An abstract class. The base of what the state should be like
+/// </summary>
 public abstract class PlayerBaseState
 {
     private bool _isRootState = false;
@@ -16,18 +19,28 @@ public abstract class PlayerBaseState
         _factory = playerStateFactory;
     }
 
-    // Функція котра виконується при вході в стан
+    /// <summary>
+    /// Function that is executed when entering the state
+    /// </summary>
     public abstract void EnterState();
 
-    // Функція котра обробляє кожну секунду функціонал певного стану
+    /// <summary>
+    /// Function that processes the state’s functionality every second
+    /// </summary>
     public abstract void UpdateState();
 
-    // Функція яка виконується при виході зі стану (Cleanup)
+    /// <summary>
+    /// Function that is executed when exiting the state (Cleanup)
+    /// </summary>
     public abstract void ExitState();
 
     public abstract void InitializeSubState();
 
-    // Обробляє наміри сутності які були викликані з менеджеру станів
+    /// <summary>
+    /// Handles entity intents that were triggered from the state manager
+    /// </summary>
+    /// <param name="entity">Context of FSM of current entity</param>
+    /// <param name="intent">The player's desire to take an action (intent). Depens on what button is pressed</param>
     public virtual void HandleIntent(PlayerStateManager entity, Intent intent) { }
 
     public void UpdateStates()
@@ -39,6 +52,9 @@ public abstract class PlayerBaseState
         }
     }
 
+    /// <summary>
+    /// Function created for exiting all the states (including sub-states)
+    /// </summary>
     public void ExitStates()
     {
         ExitState();
@@ -47,6 +63,11 @@ public abstract class PlayerBaseState
             _currentSubState?.ExitStates();
         }
     }
+
+    /// <summary>
+    /// A function that helps to switch states correctly. Entering the new, leaving the present
+    /// </summary>
+    /// <param name="newState"></param>
     protected void SwitchState(PlayerBaseState newState) 
     {
         // exit current state
