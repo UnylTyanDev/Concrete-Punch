@@ -1,3 +1,4 @@
+using UnityEngine;
 
 /// <summary>
 /// A state where player is stunned by enemy attack, and playing hurt animation
@@ -5,27 +6,54 @@
 /// </summary>
 public class PlayerStunnedState : PlayerBaseState
 {
-    public PlayerStunnedState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }
+    float stunTimer;
+
+    public PlayerStunnedState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory)
+        : base(currentContext, playerStateFactory) 
+    {
+        IsRootState = true;
+    }
+
     public override void EnterState()
     {
-        // Функціонал початку стану
+        Debug.LogWarning("Гравець в стані!");
+        stunTimer = Ctx.stunDuration;
+
+        // играем анимацию удара
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+
+        // останавливаем движение
+        Ctx.moveVector = Vector2.zero;
     }
 
     public override void UpdateState()
     {
-        // Функціонал який виконується кожен кадр для цього стану
+        Debug.Log("Player stun: " + stunTimer);
+        stunTimer -= Time.deltaTime;
+
+        if (stunTimer <= 0f)
+        {
+            SwitchState(Factory.Idle());
+        }
     }
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
-        // Тут визначається намір сутності, та чи виконається сама дія в залежності від стану
-        //Debug.Log("Обробляємо намір сутності в стані STUNNED");
+        // Во время стана игрок не может выполнять действия
+        // Просто игнорируем интенты
     }
 
-    public override void ExitState() { }
+    public override void ExitState()
+    {
+    }
 
     public override void InitializeSubState()
     {
+    }
 
+    public override void HandleHurtEvent()
+    {
+        // если ударили снова во время стана — просто обновляем таймер
+        stunTimer = Ctx.stunDuration;
     }
 }

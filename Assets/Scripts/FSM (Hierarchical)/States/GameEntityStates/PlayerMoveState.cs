@@ -50,9 +50,9 @@ public class PlayerMoveState : PlayerBaseState
 
         // If needed to switch to other states — switch to their instances,
         // not to MoveState (and do not call ExitState manually)
-        if (intent.Type == IntentType.Grab)
+        if (intent.Type == IntentType.Grab && !intent.IsPressed)
         {
-            SwitchState(Factory.Walk());
+            SwitchState(Factory.Grab());
             // If needed, you can pass the intent: entity.GrabState.HandleIntent(entity, intent);
             return;
         }
@@ -73,5 +73,11 @@ public class PlayerMoveState : PlayerBaseState
     public override void InitializeSubState()
     {
         
+    }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
     }
 }

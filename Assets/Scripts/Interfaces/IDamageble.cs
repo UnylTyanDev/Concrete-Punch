@@ -4,4 +4,5 @@
 public interface IDamageble
 {
     void TakeDamage(DamageData damageData);
+    void SendHurtEvent();
 }

@@ -28,4 +28,8 @@ public class AnimationEventForwarder : MonoBehaviour
     public void EnableRecovery() => eventReceiver?.OnRecoveryEnable();
 
     public void DisableRecovery() => eventReceiver?.OnRecoveryDisable();
+
+    public void TriggerCheckGrab() => eventReceiver?.OnCheckGrab();
+
+    public void DisableGrab() => eventReceiver?.OnGrabDisable();
 }

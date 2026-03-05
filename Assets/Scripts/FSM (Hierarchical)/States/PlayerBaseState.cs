@@ -103,4 +103,5 @@ public abstract class PlayerBaseState
         newSubState.SetSuperState(this);
     }
 
+    public abstract void HandleHurtEvent();
 }

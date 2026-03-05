@@ -9,7 +9,7 @@ public class PlayerFreeState : PlayerBaseState
 {
     private bool _firstUpdate;
 
-    public PlayerFreeState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) 
+    public PlayerFreeState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory)
     {
         IsRootState = true;
     }
@@ -42,20 +42,25 @@ public class PlayerFreeState : PlayerBaseState
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
     {
         // Here the entity's intent is determined, and whether the action will be executed depending on the state
-        Debug.Log("Обробляємо намір сутності в стані FREE намір: " + intent.Type + " " + intent.MoveVector); 
+        Debug.Log("Обробляємо намір сутності в стані FREE намір: " + intent.Type + " " + intent.MoveVector);
 
         if (intent.Type == IntentType.Move)
         {
-            Debug.Log("Переходимо у Move!");
+            Debug.Log("Переходимо у Move з Free");
             SwitchState(Factory.Walk());
             // Передаємо інтент безпосередньо в новий стан, щоб той зміг встановити moveVector
             entity.moveVector = intent.MoveVector;
             //entity.MoveState.HandleIntent(entity, intent);
             return;
         }
+        if (intent.Type == IntentType.Grab && !intent.IsPressed)
+        {
+            Debug.Log("Переходимо у Grab з Free");
+            SwitchState(Factory.Grab());
+        }
     }
 
-    public override void ExitState() 
+    public override void ExitState()
     {
 
     }
@@ -63,5 +68,11 @@ public class PlayerFreeState : PlayerBaseState
     public override void InitializeSubState()
     {
 
+    }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
     }
 }

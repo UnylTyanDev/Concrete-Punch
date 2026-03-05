@@ -39,7 +39,7 @@ public class PlayerAttackReleaseState : PlayerBaseState
 
     private void ActivateHitbox()
     {
-        Ctx.hitbox.Activate(_attackData.baseDamage, Ctx.chargeMultiplier, _attackData.direction, _attackData.knockbackForce);
+        Ctx.hitbox.ActivateDamage(_attackData.baseDamage, Ctx.chargeMultiplier, _attackData.direction, _attackData.knockbackForce);
     }
 
     public override void HandleIntent(PlayerStateManager entity, Intent intent)
@@ -84,5 +84,11 @@ public class PlayerAttackReleaseState : PlayerBaseState
     {
         Ctx.currentAttack = _attackData.nextAttack;
         SwitchState(Factory.AttackRecovery());
+    }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
     }
 }

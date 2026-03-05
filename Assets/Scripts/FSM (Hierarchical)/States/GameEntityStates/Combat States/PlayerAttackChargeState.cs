@@ -66,4 +66,10 @@ public class PlayerAttackChargeState : PlayerBaseState
     {
 
     }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
+    }
 }

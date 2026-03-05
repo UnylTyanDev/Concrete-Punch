@@ -10,6 +10,7 @@ public class HitboxManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private LayerMask _targetLayers; // Which layers is considered as enemies to deal damage
     [SerializeField] private bool _debugDraw;
+    [SerializeField] private IGrabbable _lastGrabbedTarget;
 
     private Collider _collider;
     private List<IDamageble> _targetsToDamage; // Targets that already got damaged (Its added to not harm one enemy twice, even if we really wanted to)
@@ -35,7 +36,7 @@ public class HitboxManager : MonoBehaviour
     /// <param name="damageMultiplier"> Multiplies base damage (How strong were this attack?) </param>
     /// <param name="direction"> Attack hit direction (From where attack came from?)</param>
     /// <param name="knockbackForce"> Force that we use to push victim away (How strong is knockback force is?)</param>
-    public void Activate(float damage, float damageMultiplier, HitDirection direction, float knockbackForce)
+    public void ActivateDamage(float damage, float damageMultiplier, HitDirection direction, float knockbackForce)
     {
         if (_isActive) return;
 
@@ -45,17 +46,21 @@ public class HitboxManager : MonoBehaviour
 
         // Gathering all colliders that is inside of a hitbox
         Collider[] hitColliders = Physics.OverlapBox(_collider.bounds.center, _collider.bounds.extents, _collider.transform.rotation, _targetLayers);
+
         foreach (var hitCollider in hitColliders)
         {
-            // Skipping the player collider
-            if (hitCollider.transform.IsChildOf(transform.root)) continue;
+            // debug
+            Debug.LogWarning("Hitbox found: " + hitCollider.name);
 
-            IDamageble damageble = hitCollider.GetComponent<IDamageble>();
+            // нельз€ пропускать чужие коллайдеры по root, используем GetComponentInParent
+            IDamageble damageble = hitCollider.GetComponent<IDamageble>() ?? hitCollider.GetComponentInParent<IDamageble>();
 
             if (damageble != null && !_targetsToDamage.Contains(damageble))
             {
                 DamageData damageData = new DamageData(damage * damageMultiplier, direction, knockbackForce);
+                Debug.LogWarning("ЅьЇмо ц≥ль: " + damageble);
                 damageble.TakeDamage(damageData);
+                damageble.SendHurtEvent();
                 _targetsToDamage.Add(damageble);
             }
 
@@ -64,6 +69,32 @@ public class HitboxManager : MonoBehaviour
                 Debug.DrawLine(_collider.bounds.center, _collider.bounds.center + Vector3.up * 0.5f, Color.red, 1f);
             }
         }
+    }
+
+    public bool TryGrab(Transform grabber, out IGrabbable grabbedTarget)
+    {
+        grabbedTarget = null;
+        if (_isActive) return false;
+
+        _isActive = true;
+        gameObject.SetActive(true);
+
+        Collider[] hitColliders = Physics.OverlapBox(_collider.bounds.center, _collider.bounds.extents, _collider.transform.rotation, _targetLayers);
+        foreach (var hitCollider in hitColliders)
+        {
+            //if (hitCollider.transform.IsChildOf(transform.root)) continue;
+
+            IGrabbable grabbable = hitCollider.GetComponent<IGrabbable>();
+            if (grabbable != null && grabbable.CanBeGrabbed)
+            {
+                grabbedTarget = grabbable;
+                grabbable.OnGrabbed(grabber);
+                return true;
+            }
+        }
+
+        Deactivate();
+        return false;
     }
 
     public void Deactivate()

@@ -99,12 +99,15 @@ public class InputInterpreter : MonoBehaviour
             return;
         }
 
-        if (_grabHeld)
-        {
-            Debug.Log("Sending because of request: Grab");
-            SendIntent(Intent.Grab());
-            return;
-        }
+        // With this code down there, player just gets stuck after he returns to idle state from grab
+
+        //if (_grabHeld)
+        //{
+        //    Debug.Log("Sending because of request: Grab");
+        //    SendIntent(Intent.Grab());
+        //    return;
+        //}
+
 
         // If there’s nothing — you can send "Idle" or do nothing
         // SendIntent(Intent.Idle()); // optional

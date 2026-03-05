@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerGrabbedState : PlayerBaseState
 {
     private IGrabbable _target;
-    private bool _canAttack = true;
+    //private bool _canAttack = true;
     public PlayerGrabbedState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) 
     {
         IsRootState = true;
@@ -44,5 +44,11 @@ public class PlayerGrabbedState : PlayerBaseState
     public override void InitializeSubState()
     {
 
+    }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
     }
 }

@@ -9,7 +9,10 @@ public class PlayerGrabState : PlayerBaseState
     private float _grabRange;
     private LayerMask _grabbableLayer;
 
-    public PlayerGrabState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }
+    public PlayerGrabState(PlayerStateManager currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory)
+    {
+        IsRootState = true;
+    }
 
     public override void EnterState()
     {
@@ -17,29 +20,8 @@ public class PlayerGrabState : PlayerBaseState
         // Here the entity enters grab mode, either grabbing someone or being grabbed.
         // From this mode, it can transition to: StunnedState, ActionState
         Debug.Log("Trying to grab...");
-        Collider[] hits = Physics.OverlapSphere(Ctx.transform.position, _grabRange, _grabbableLayer);
-        IGrabbable target = null;
-        foreach (var hit in hits)
-        {
-            var g = hit.GetComponent<IGrabbable>();
-            if (g != null && g.CanBeGrabbed)
-            {
-                target = g;
-                break;
-            }
-        }
-        if (target != null)
-        {
-            // Succesfull grab
-            Ctx.grabbedTarget = target;
-            target.OnGrabbed(Ctx.transform);
-            Ctx.entityAnimator.PlayAnimation("entity_grab");
-        }
-        else
-        {
-            SwitchState(Factory.Idle());
-        }
-
+        Ctx.moveVector = Vector2.zero; // Stops player when doing action
+        Ctx.entityAnimator.PlayAnimation("entity_grab");
     }
 
     public override void UpdateState()
@@ -53,7 +35,10 @@ public class PlayerGrabState : PlayerBaseState
         // Debug.Log("Processing entity intent in GRAB state");
     }
 
-    public override void ExitState() { }
+    public override void ExitState()
+    {
+        Ctx.hitbox.Deactivate();
+    }
 
     public override void InitializeSubState()
     {
@@ -62,8 +47,26 @@ public class PlayerGrabState : PlayerBaseState
     /// <summary>
     /// Go to grabbed state when we grabbed someone (Calls from Unity Animation Events)
     /// </summary>
-    public void OnGrabCompleted()
+    public void GrabCheckExternal()
     {
-        SwitchState(Factory.Grabbed());
+        if (Ctx.hitbox.TryGrab(Ctx.transform, out IGrabbable target))
+        {
+            Debug.Log("У нас є ціль яку можна схвопити. Схоплюємо");
+            Ctx.grabbedTarget = target;
+            // Here we can play animation of succesfull grab
+        }
     }
+
+    public void GrabDisableExternal()
+    {
+        Debug.Log("Нікого не найшли щоб схопити, переходимо у Free виходячи з Grab");
+        SwitchState(Factory.Idle());
+    }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
+    }
+
 }

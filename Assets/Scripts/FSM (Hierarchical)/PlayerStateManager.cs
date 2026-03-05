@@ -7,6 +7,7 @@ public class PlayerStateManager : MonoBehaviour, IAnimationEventReceiver
     public PlayerMovement Movement;
     public EntityAnimatorManager entityAnimator;
     public InputInterpreter inputInterpreter;
+    public float stunDuration = 0.25f;
 
     public AttackData firstAttack; // Base attack (charge) from which branches out all other attacks
     public AttackData currentAttack;
@@ -96,11 +97,27 @@ public class PlayerStateManager : MonoBehaviour, IAnimationEventReceiver
     /// <summary>
     /// When we
     /// </summary>
-    public void OnSuccesGrab()
+    public void OnCheckGrab()
     {
         if (_currentState is PlayerGrabState grabState)
         {
-            grabState.OnGrabCompleted();
+            grabState.GrabCheckExternal();
         }
+    }
+
+    public void OnGrabDisable()
+    {
+        if (_currentState is PlayerGrabState grabState)
+        {
+            grabState.GrabDisableExternal();
+        }
+    }
+
+    /// <summary>
+    /// This function will help us play the hurt animation (TODO: Add parameters in function for punch direction. For more hurt animation variety)
+    /// </summary>
+    public void OnHurtEvent()
+    {
+        _currentState.HandleHurtEvent();
     }
 }

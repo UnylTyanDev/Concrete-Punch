@@ -9,5 +9,7 @@ public interface IAnimationEventReceiver
     void OnHitboxDeactivate();
     void OnRecoveryEnable();
     void OnRecoveryDisable();
-    void OnSuccesGrab();
+    void OnCheckGrab();
+    void OnGrabDisable();
+    void OnHurtEvent();
 }

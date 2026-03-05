@@ -57,4 +57,10 @@ public class PlayerAttackRecoveryState : PlayerBaseState
         Debug.Log("Returning to idle when player doesnt continue combo");
         SwitchState(Factory.Idle());
     }
+
+    public override void HandleHurtEvent()
+    {
+        Ctx.entityAnimator.PlayAnimation("entity_hurt");
+        SwitchState(Factory.Stunned());
+    }
 }

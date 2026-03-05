@@ -6,12 +6,20 @@ using UnityEngine;
 /// </summary>
 public class EntityHealth : MonoBehaviour, IDamageble
 {
+    [SerializeField] private MonoBehaviour _eventReceiverBehaviour;
+    private IAnimationEventReceiver eventReceiver;
     [SerializeField] private float _maxHealth = 30;
     [SerializeField] private float _currentHealth;
 
     private void Awake()
     {
         _currentHealth = _maxHealth;
+
+        eventReceiver = _eventReceiverBehaviour as IAnimationEventReceiver;
+        if (eventReceiver == null)
+        {
+            Debug.LogError($"{_eventReceiverBehaviour.name} does not implement IAnimationEventReceiver!");
+        }
     }
 
     public void TakeDamage(DamageData damageData)
@@ -24,8 +32,14 @@ public class EntityHealth : MonoBehaviour, IDamageble
         // Play animation using hit direction and apply knockback to the entity
     }
 
+    public void SendHurtEvent()
+    {
+        eventReceiver?.OnHurtEvent();
+    }
+
     public void Die()
     {
+        SendHurtEvent();
         Destroy(gameObject);
     }
 }

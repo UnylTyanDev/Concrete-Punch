@@ -6,7 +6,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float rotationSpeed = 12f;
     [SerializeField] Transform cameraTransform;
+
+    [SerializeField] float gravity = -9.81f;
+    [SerializeField] float groundedForce = -2f;
+
     Vector2 moveInput;
+    float verticalVelocity;
 
     void Awake()
     {
@@ -23,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         ApplyMovement();
-        moveInput = Vector2.zero; // 🔴 КЛЮЧЕВО: сброс каждый кадр
+        moveInput = Vector2.zero;
     }
 
     public void SetMoveInput(Vector2 input)
@@ -33,8 +38,14 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyMovement()
     {
-        if (moveInput.sqrMagnitude < 0.0001f)
-            return;
+        // Проверка земли
+        if (controller.isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = groundedForce;
+        }
+
+        // Применяем гравитацию
+        verticalVelocity += gravity * Time.deltaTime;
 
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
@@ -47,14 +58,20 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveDir = camRight * moveInput.x + camForward * moveInput.y;
 
-        controller.Move(moveDir * moveSpeed * Time.deltaTime);
+        Vector3 finalMove = moveDir * moveSpeed;
+        finalMove.y = verticalVelocity;
 
-        // Поворот в сторону движения
-        Quaternion targetRot = Quaternion.LookRotation(moveDir);
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRot,
-            rotationSpeed * Time.deltaTime
-        );
+        controller.Move(finalMove * Time.deltaTime);
+
+        // Поворот только если есть движение
+        if (moveDir.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 }
